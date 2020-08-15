@@ -30,5 +30,12 @@ namespace CretaceousPark.Controllers
       _db.Animals.Add(animal);
       _db.SaveChanges();
     }
+
+    //GET api/animals/5
+    [HttpGet("{id")]
+    public ActionResult<Animal> GetAction(int id)
+    {
+      return _db.Animals.FirstOrDefault(entry => entry.AnimalId == id);
+    }
   }
 }
