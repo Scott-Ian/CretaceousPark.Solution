@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using CretaceousPark.Models;
 
 namespace CretaceousPark.Controllers
@@ -36,6 +37,15 @@ namespace CretaceousPark.Controllers
     public ActionResult<Animal> GetAction(int id)
     {
       return _db.Animals.FirstOrDefault(entry => entry.AnimalId == id);
+    }
+
+    //PUT api/animals/5
+    [HttpPut("{id}")]
+    public void Put (int id, [FromBody] Animal animal)
+    {
+      animal.AnimalId=id;
+      _db.Entry(animal).State = EntityState.Modified;
+      _db.SaveChanges();
     }
   }
 }
