@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using CretaceousPark.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CretaceousPark.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
-  public class AnimalsController: ControllerBase
+  public class AnimalsController : ControllerBase
   {
     private CretaceousParkContext _db;
 
@@ -17,14 +17,31 @@ namespace CretaceousPark.Controllers
       _db = db;
     }
 
-    //GET api/animals
+    // GET api/animals
     [HttpGet]
-    public ActionResult<IEnumerable<Animal>> Get()
+    public ActionResult<IEnumerable<Animal>> Get(string species, string gender, string name)
     {
-      return _db.Animals.ToList();
+      var query = _db.Animals.AsQueryable();
+
+      if (species != null)
+      {
+        query = query.Where(entry => entry.Species == species);
+      }
+
+      if (gender != null)
+      {
+        query = query.Where(entry => entry.Gender == gender);
+      }
+
+      if (name != null)
+      {
+        query = query.Where(entry => entry.Name == name);
+      }
+
+      return query.ToList();
     }
 
-    //POST api/animals
+    // POST api/animals
     [HttpPost]
     public void Post([FromBody] Animal animal)
     {
@@ -32,23 +49,23 @@ namespace CretaceousPark.Controllers
       _db.SaveChanges();
     }
 
-    //GET api/animals/5
+    // GET api/animals/5
     [HttpGet("{id}")]
-    public ActionResult<Animal> GetAction(int id)
+    public ActionResult<Animal> Get(int id)
     {
       return _db.Animals.FirstOrDefault(entry => entry.AnimalId == id);
     }
 
-    //PUT api/animals/5
+    // PUT api/animals/5
     [HttpPut("{id}")]
-    public void Put (int id, [FromBody] Animal animal)
+    public void Put(int id, [FromBody] Animal animal)
     {
-      animal.AnimalId=id;
+      animal.AnimalId = id;
       _db.Entry(animal).State = EntityState.Modified;
       _db.SaveChanges();
     }
 
-    //DELETE api/animals/5
+    // DELETE api/animals/5
     [HttpDelete("{id}")]
     public void Delete(int id)
     {
